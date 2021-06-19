@@ -1,0 +1,126 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+    @await Html.PartialAsync("~/Views/Shared/_Navbar.cshtml")
+
+    <div class="container mt-10">
+
+        <div class="jumbotron">
+            <h1 class="display-4">Bruteforce Simulator For Dummies</h1>
+            <p class="lead">With this simple app, intern cybersecurity researchers can try brute force on their site's login forms. It still needs improvement.</p>
+            <hr class="my-4">
+            <p>Use responsible :)</p>
+
+            @*Parametrik olacak değerler:
+                username input alanı idsi, password input alanı id si, istek sayısı, istekte kullanılacak user name dosyası, istekte kullanılacak password dosyası, istek atılacak formun bulunduğu url*@
+
+            <br />
+            <div class="form-group">
+
+                <label class="text-danger">URL:</label>
+                <input id="formUrl" type="text" class="form-control" />
+                <p class="text-muted">Provide page url which contains <strong>login form.</strong></p>
+
+                <label class="text-danger">USER NAME INPUT ID:</label>
+                <input id="formUsername" type="text" class="form-control">
+                <p class="text-muted">CSS ID of User Name input field. (You can use "<strong>Inspect Element</strong>" function of your browser)</p>
+
+                <label class="text-danger">PASSWORD INPUT FIELD ID:</label>
+                <input id="formPassword" type="text" class="form-control" />
+                <p class="text-muted">CSS ID of User Name input field.</p>
+
+                <label class="text-danger">LOGIN BUTTON ID:</label>
+                <input id="btnLoginButtonId" type="text" class="form-control" />
+                <p class="text-muted">Please provide DOM ID of login button.</p>
+
+                <label class="text-danger">NUMBER OF REQUESTS:</label>
+                <input id="formRequestsNumber" type="text" class="form-control" />
+                <p class="text-muted">How many times do you want to kiss? :)</p>
+
+
+
+
+            </div>
+
+            <div class="d-flex flex-row bd-highlight">
+                <div class="bd-highlight"><a class="btn btn-danger btn-lg" onclick="triggerAttack()" href="#" role="button">KISS :)</a></div>
+                <div class="bd-highlight" style="width:15px"></div>
+                <div class="bd-highlight"><img class="d-none" id="loadingGif" style="width:48px;height:48px" src="~/loading.gif" /></div>
+
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+<script>
+    
+    //TO-DO: User inputs will validated
+
+
+    var triggerAttack = () => {
+
+        /*loadingGifToogle(true);*/
+
+        var jsonData = createJsonObjectFromUserInputs();
+        console.log(jsonData)
+       
+        
+        fetch(`${window.location.protocol}//${window.location.host}/api/GenerateRequests`,
+            {
+                headers: {
+                    /*'Host': 'localhost:44366',*/
+                    'Accept': 'application/json;',
+                    'Content-Type': 'application/json',
+                    'dataType': 'json',
+
+                },
+                body: JSON.stringify(jsonData),
+                method: 'POST',
+            }).then(response => response.text())
+            .then(data => {
+                console.log(data);
+            });
+    }
+
+    var createJsonObjectFromUserInputs = () => {
+
+
+        let formUrl = document.querySelector('#formUrl').value;
+        let formUsername = document.querySelector('#formUsername').value;
+        let formPassword = document.querySelector('#formPassword').value;
+        let formLoginButton = document.querySelector('#btnLoginButtonId').value;
+        let formRequestsNumber = document.querySelector('#formRequestsNumber').value;
+        var jsonObject = { formUrl: formUrl, formUsernameAreaId: formUsername, formPasswordAreaId: formPassword, formRequestsNumber: formRequestsNumber, formLoginButtonId: formLoginButton }
+        return jsonObject;
+
+
+    }
+
+    var loadingGifToogle = (on) => {
+        if (on === true) {
+            document.querySelector("#loadingGif").classList.remove('d-none');
+
+        }
+        else {
+            document.querySelector("#loadingGif").classList.add('d-none');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+       
+
+    });
+
+</script>
+
